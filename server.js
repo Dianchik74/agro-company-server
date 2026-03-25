@@ -1,0 +1,84 @@
+const express = require('express');
+const mysql = require('mysql2');
+const cors = require('cors');
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+//Підключення до БД 
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '7777', // якщо є пароль — впиши
+  database: 'agrarian_company'
+});
+
+db.connect(err => {
+  if (err) {
+    console.log('DB error:', err);
+  } else {
+    console.log('Connected to MySQL');
+  }
+});
+
+
+// ================= GET =================
+app.get('/works', (req, res) => {
+  db.query('SELECT * FROM works', (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+});
+
+
+// ================= POST =================
+app.post('/works', (req, res) => {
+  const { work_type, work_date } = req.body;
+
+  db.query(
+    'INSERT INTO works (work_type, work_date) VALUES (?, ?)',
+    [work_type, work_date],
+    (err, result) => {
+      if (err) throw err;
+      res.json({ message: 'Work added', id: result.insertId });
+    }
+  );
+});
+
+
+// ================= PUT =================
+app.put('/works/:id', (req, res) => {
+  const { work_type } = req.body;
+  const id = req.params.id;
+
+  db.query(
+    'UPDATE works SET work_type=? WHERE work_id=?',
+    [work_type, id],
+    (err) => {
+      if (err) throw err;
+      res.json({ message: 'Updated' });
+    }
+  );
+});
+
+
+// ================= DELETE =================
+app.delete('/works/:id', (req, res) => {
+  const id = req.params.id;
+
+  db.query(
+    'DELETE FROM works WHERE work_id=?',
+    [id],
+    (err) => {
+      if (err) throw err;
+      res.json({ message: 'Deleted' });
+    }
+  );
+});
+
+
+// запуск сервера
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
