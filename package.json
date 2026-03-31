@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Tests passed\""
+    "test": "exit 1"
   },
   "keywords": [],
   "author": "",
