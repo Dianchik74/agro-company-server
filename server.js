@@ -10,7 +10,7 @@ app.use(cors());
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '7777', // якщо є пароль — впиши
+  password: '7777', 
   database: 'agrarian_company'
 });
 
@@ -79,6 +79,10 @@ app.delete('/works/:id', (req, res) => {
 
 
 // запуск сервера
+app.get('/', (req, res) => {
+  res.send('Server is working');
+});
+
 app.listen(3000, () => {
   console.log('Server running on port 3000');
 });
