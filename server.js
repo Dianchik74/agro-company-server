@@ -26,7 +26,10 @@ db.connect(err => {
 // ================= GET =================
 app.get('/works', (req, res) => {
   db.query('SELECT * FROM works', (err, results) => {
-    if (err) throw err;
+    if (err) {
+      console.log(err);
+      return res.status(500).send('DB error');
+    }
     res.json(results);
   });
 });
@@ -56,7 +59,10 @@ app.put('/works/:id', (req, res) => {
     'UPDATE works SET work_type=? WHERE work_id=?',
     [work_type, id],
     (err) => {
-      if (err) throw err;
+      if (err) {
+        console.log(err);
+        return res.status(500).send('DB error');
+      }
       res.json({ message: 'Updated' });
     }
   );
@@ -71,7 +77,10 @@ app.delete('/works/:id', (req, res) => {
     'DELETE FROM works WHERE work_id=?',
     [id],
     (err) => {
-      if (err) throw err;
+      if (err) {
+        console.log(err);
+        return res.status(500).send('DB error');
+      }
       res.json({ message: 'Deleted' });
     }
   );
