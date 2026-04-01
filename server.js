@@ -8,10 +8,11 @@ app.use(cors());
 
 //Підключення до БД 
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '7777', 
-  database: 'agrarian_company'
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
 });
 
 db.connect(err => {
@@ -26,7 +27,10 @@ db.connect(err => {
 // ================= GET =================
 app.get('/works', (req, res) => {
   db.query('SELECT * FROM works', (err, results) => {
-    if (err) throw err;
+    if (err) {
+      console.log(err);
+      return res.status(500).send('DB error');
+    }
     res.json(results);
   });
 });
@@ -56,7 +60,10 @@ app.put('/works/:id', (req, res) => {
     'UPDATE works SET work_type=? WHERE work_id=?',
     [work_type, id],
     (err) => {
-      if (err) throw err;
+      if (err) {
+        console.log(err);
+        return res.status(500).send('DB error');
+      }
       res.json({ message: 'Updated' });
     }
   );
@@ -71,7 +78,10 @@ app.delete('/works/:id', (req, res) => {
     'DELETE FROM works WHERE work_id=?',
     [id],
     (err) => {
-      if (err) throw err;
+      if (err) {
+        console.log(err);
+        return res.status(500).send('DB error');
+      }
       res.json({ message: 'Deleted' });
     }
   );
@@ -83,8 +93,9 @@ app.get('/', (req, res) => {
   res.send('Server is working');
 });
 
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});
+const PORT = process.env.PORT || 3000;
 
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 // test PR
